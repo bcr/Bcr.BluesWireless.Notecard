@@ -1,4 +1,6 @@
-﻿using System.IO.Ports;
+﻿using Bcr.BluesWireless.Notecard.Console;
+
+using System.IO.Ports;
 using System.Text.RegularExpressions;
 
 IEnumerable<string> GetPotentialSerialPortNames()
@@ -9,6 +11,8 @@ IEnumerable<string> GetPotentialSerialPortNames()
 using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
 {
     serialPort.Open();
-    serialPort.WriteLine("{\"req\":\"card.time\"}");
+    var communicationChannel = new SerialPortCommunicationChannel(serialPort);
+
+    communicationChannel.SendLine("{\"req\":\"card.time\"}");
     Console.WriteLine(serialPort.ReadLine());
 }

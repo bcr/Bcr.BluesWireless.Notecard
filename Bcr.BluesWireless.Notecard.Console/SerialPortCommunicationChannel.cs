@@ -16,7 +16,7 @@ public class SerialPortCommunicationChannel : ICommunicationChannel
         _serialPort.WriteLine(data);
     }
 
-    public string ReceiveLine(string data)
+    public string ReceiveLine()
     {
         return _serialPort.ReadLine();
     }

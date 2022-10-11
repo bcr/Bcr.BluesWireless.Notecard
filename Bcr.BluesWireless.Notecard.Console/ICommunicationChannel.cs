@@ -10,5 +10,5 @@ interface ICommunicationChannel
     /// <summary>
     /// Receive a line. The trailing LF is NOT included.
     /// </summary>
-    public string ReceiveLine(string data);
+    public string ReceiveLine();
 }

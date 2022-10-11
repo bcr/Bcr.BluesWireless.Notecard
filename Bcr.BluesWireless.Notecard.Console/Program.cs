@@ -14,5 +14,5 @@ using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
     var communicationChannel = new SerialPortCommunicationChannel(serialPort);
 
     communicationChannel.SendLine("{\"req\":\"card.time\"}");
-    Console.WriteLine(serialPort.ReadLine());
+    Console.WriteLine(communicationChannel.ReceiveLine());
 }

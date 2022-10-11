@@ -1,5 +1,5 @@
 ﻿using Bcr.BluesWireless.Notecard.Core;
-
+using PrettyPrompt;
 using System.IO.Ports;
 using System.Text.RegularExpressions;
 
@@ -12,16 +12,19 @@ using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
 {
     serialPort.Open();
     var communicationChannel = new SerialPortCommunicationChannel(serialPort);
+    var prompt = new Prompt(configuration: new PromptConfiguration(prompt: "> "));
 
     while (true)
     {
-        Console.Write("> ");
-        var command = Console.ReadLine();
-        if (command == null)
+        var response = await prompt.ReadLineAsync();
+        if (response.IsSuccess)
         {
-            break;
+            if (response.Text == "exit")
+            {
+                break;
+            }
+            communicationChannel.SendLine(response.Text);
+            Console.WriteLine(communicationChannel.ReceiveLine());
         }
-        communicationChannel.SendLine(command);
-        Console.WriteLine(communicationChannel.ReceiveLine());
     }
 }

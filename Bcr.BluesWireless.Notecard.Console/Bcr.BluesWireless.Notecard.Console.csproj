@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Bcr.BluesWireless.Notecard.Core\Bcr.BluesWireless.Notecard.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PrettyPrompt" Version="3.0.6" />
+  </ItemGroup>
+
 </Project>

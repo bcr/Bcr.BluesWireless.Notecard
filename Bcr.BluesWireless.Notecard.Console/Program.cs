@@ -1,4 +1,4 @@
-﻿using Bcr.BluesWireless.Notecard.Console;
+﻿using Bcr.BluesWireless.Notecard.Core;
 
 using System.IO.Ports;
 using System.Text.RegularExpressions;

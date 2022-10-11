@@ -1,4 +1,4 @@
-namespace Bcr.BluesWireless.Notecard.Console;
+namespace Bcr.BluesWireless.Notecard.Core;
 
 interface ICommunicationChannel
 {

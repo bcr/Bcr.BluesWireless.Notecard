@@ -1,6 +1,6 @@
 using System.IO.Ports;
 
-namespace Bcr.BluesWireless.Notecard.Console;
+namespace Bcr.BluesWireless.Notecard.Core;
 
 public class SerialPortCommunicationChannel : ICommunicationChannel
 {

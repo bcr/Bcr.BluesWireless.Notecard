@@ -19,11 +19,19 @@ DateTimeOffset MakeDateTimeOffset(long unixTime, int offsetMinutes)
     return offset;
 }
 
+string GetHistoryPath()
+{
+    return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".bluehistory");
+}
+
 using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
 {
     serialPort.Open();
+    Console.WriteLine($"Connected to {serialPort.PortName}");
     var communicationChannel = new SerialPortCommunicationChannel(serialPort);
-    var prompt = new Prompt(configuration: new PromptConfiguration(prompt: "> "));
+    var historyPath = GetHistoryPath();
+    var prompt = new Prompt(persistentHistoryFilepath: historyPath, configuration: new PromptConfiguration(prompt: "> "));
+    Console.WriteLine($"History saved at {historyPath}");
 
     while (true)
     {

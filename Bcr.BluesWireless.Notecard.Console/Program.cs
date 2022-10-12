@@ -28,27 +28,25 @@ using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
     while (true)
     {
         var response = await prompt.ReadLineAsync();
-        if (response.IsSuccess)
+        if ((!response.IsSuccess) || (response.Text == "exit"))
         {
-            if (response.Text == "exit")
-            {
-                break;
-            }
-            communicationChannel.SendLine(response.Text);
-            var receivedLine = communicationChannel.ReceiveLine();
-            Console.WriteLine(receivedLine);
-            if (response.Text.Contains("card.time"))
-            {
-                var json = JsonSerializer.Deserialize<CardTimeResponse>(
-                    receivedLine,
-                    new JsonSerializerOptions {
-                        PropertyNamingPolicy = new InitialCapNamingPolicy()
-                        }
-                    );
-                Console.WriteLine(json);
-                var offset = MakeDateTimeOffset(json!.Time, json.Minutes);
-                Console.WriteLine(offset);
-            }
+            break;
+        }
+
+        communicationChannel.SendLine(response.Text);
+        var receivedLine = communicationChannel.ReceiveLine();
+        Console.WriteLine(receivedLine);
+        if (response.Text.Contains("card.time"))
+        {
+            var json = JsonSerializer.Deserialize<CardTimeResponse>(
+                receivedLine,
+                new JsonSerializerOptions {
+                    PropertyNamingPolicy = new InitialCapNamingPolicy()
+                    }
+                );
+            Console.WriteLine(json);
+            var offset = MakeDateTimeOffset(json!.Time, json.Minutes);
+            Console.WriteLine(offset);
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿using Bcr.BluesWireless.Notecard.Core;
+﻿using Bcr.BluesWireless.Notecard.Console;
+using Bcr.BluesWireless.Notecard.Core;
 using PrettyPrompt;
 using System.IO.Ports;
-// using System.Text.Json.Nodes;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 IEnumerable<string> GetPotentialSerialPortNames()
@@ -27,7 +28,11 @@ using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
             communicationChannel.SendLine(response.Text);
             var receivedLine = communicationChannel.ReceiveLine();
             Console.WriteLine(receivedLine);
-            // var json = JsonNode.Parse(receivedLine).AsObject();
+            if (response.Text.Contains("card.time"))
+            {
+                var json = JsonSerializer.Deserialize<CardTimeResponse>(receivedLine);
+                Console.WriteLine(json);
+            }
         }
     }
 }

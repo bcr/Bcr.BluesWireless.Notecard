@@ -10,6 +10,15 @@ IEnumerable<string> GetPotentialSerialPortNames()
     return SerialPort.GetPortNames().Where((name) => Regex.IsMatch(name, "cu.*NOTE.*"));
 }
 
+DateTimeOffset MakeDateTimeOffset(long unixTime, int offsetMinutes)
+{
+    var offset = DateTimeOffset.FromUnixTimeSeconds(unixTime);
+    offset = offset.AddMinutes(offsetMinutes);
+    offset = new DateTimeOffset(offset.DateTime, TimeSpan.FromMinutes(offsetMinutes));
+
+    return offset;
+}
+
 using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
 {
     serialPort.Open();
@@ -37,6 +46,8 @@ using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
                         }
                     );
                 Console.WriteLine(json);
+                var offset = MakeDateTimeOffset(json!.Time, json.Minutes);
+                Console.WriteLine(offset);
             }
         }
     }

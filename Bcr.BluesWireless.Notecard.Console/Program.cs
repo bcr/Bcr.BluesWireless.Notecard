@@ -1,6 +1,7 @@
 ﻿using Bcr.BluesWireless.Notecard.Core;
 using PrettyPrompt;
 using System.IO.Ports;
+// using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
 IEnumerable<string> GetPotentialSerialPortNames()
@@ -24,7 +25,9 @@ using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
                 break;
             }
             communicationChannel.SendLine(response.Text);
-            Console.WriteLine(communicationChannel.ReceiveLine());
+            var receivedLine = communicationChannel.ReceiveLine();
+            Console.WriteLine(receivedLine);
+            // var json = JsonNode.Parse(receivedLine).AsObject();
         }
     }
 }

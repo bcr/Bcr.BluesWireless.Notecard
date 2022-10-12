@@ -1,3 +1,3 @@
 namespace Bcr.BluesWireless.Notecard.Console;
 
-public record class CardTimeResponse(int minutes, Decimal lat, Decimal lon, string area, string country, string zone, uint time);
+public record class CardTimeResponse(int Minutes, Decimal Lat, Decimal Lon, string Area, string Country, string Zone, uint Time);

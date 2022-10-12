@@ -30,7 +30,12 @@ using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
             Console.WriteLine(receivedLine);
             if (response.Text.Contains("card.time"))
             {
-                var json = JsonSerializer.Deserialize<CardTimeResponse>(receivedLine);
+                var json = JsonSerializer.Deserialize<CardTimeResponse>(
+                    receivedLine,
+                    new JsonSerializerOptions {
+                        PropertyNamingPolicy = new InitialCapNamingPolicy()
+                        }
+                    );
                 Console.WriteLine(json);
             }
         }

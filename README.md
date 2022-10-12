@@ -3,6 +3,7 @@
 ## Philosophy
 
 * Run on both desktop and embedded platforms
+* Support serial and I²C
 * Try and stay as [.NET Standard](https://learn.microsoft.com/en-us/dotnet/standard/net-standard) compatible as possible
 * When diverging, isolate it in separate assemblies
 * Use Dependency Injection as appropriate

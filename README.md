@@ -11,3 +11,4 @@
 ## References
 
 https://andrewlock.net/using-dependency-injection-in-a-net-core-console-application/
+https://dev.blues.io/notecard/notecard-walkthrough/notecard-requests-and-responses/

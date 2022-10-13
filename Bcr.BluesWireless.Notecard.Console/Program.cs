@@ -18,8 +18,8 @@ internal class Program
     };
 
     static List<CompletionItem> _requestCompletionItems = new () {
-        new CompletionItem("card.status"),
-        new CompletionItem("card.temp"),
+        new CompletionItem("{\"req\":\"card.status\"}", "card.status", getExtendedDescription: (_) => Task.FromResult<FormattedString>(new FormattedString("Returns general information about the Notecard's operating status."))),
+        new CompletionItem("{\"req\":\"card.temp\"}", "card.temp", getExtendedDescription: (_) => Task.FromResult<FormattedString>(new FormattedString("Get the current temperature from the Notecard's onboard calibrated temperature sensor."))),
         new CompletionItem("note.add"),
         new CompletionItem("note.changes"),
     };

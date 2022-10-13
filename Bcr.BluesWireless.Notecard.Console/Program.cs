@@ -1,7 +1,9 @@
 ﻿using Bcr.BluesWireless.Notecard.Console;
 using Bcr.BluesWireless.Notecard.Core;
 using PrettyPrompt;
+using PrettyPrompt.Completion;
 using PrettyPrompt.Consoles;
+using PrettyPrompt.Documents;
 using PrettyPrompt.Highlighting;
 using System.IO.Ports;
 using System.Text;
@@ -13,6 +15,13 @@ internal class Program
     static Dictionary<JsonTokenType, AnsiColor> _styleDictionary = new()  {
         { JsonTokenType.String, AnsiColor.BrightGreen },
         { JsonTokenType.Number, AnsiColor.Yellow },
+    };
+
+    static List<CompletionItem> _requestCompletionItems = new () {
+        new CompletionItem("card.status"),
+        new CompletionItem("card.temp"),
+        new CompletionItem("note.add"),
+        new CompletionItem("note.changes"),
     };
 
     static IEnumerable<string> GetPotentialSerialPortNames()
@@ -61,6 +70,14 @@ internal class Program
         console.WriteLine(new FormattedString(json, formatting));
     }
 
+    private class NotecardPromptCallbacks : PromptCallbacks
+    {
+        protected override Task<IReadOnlyList<CompletionItem>> GetCompletionItemsAsync(string text, int caret, TextSpan spanToBeReplaced, CancellationToken cancellationToken)
+        {
+            return Task.FromResult<IReadOnlyList<CompletionItem>>(_requestCompletionItems);
+        }
+    }
+
     private static async Task Main(string[] args)
     {
         using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
@@ -70,7 +87,7 @@ internal class Program
             var communicationChannel = new SerialPortCommunicationChannel(serialPort);
             var historyPath = GetHistoryPath();
             var console = new SystemConsole();
-            var prompt = new Prompt(persistentHistoryFilepath: historyPath, configuration: new PromptConfiguration(prompt: "> "), console: console);
+            var prompt = new Prompt(persistentHistoryFilepath: historyPath, callbacks: new NotecardPromptCallbacks(), configuration: new PromptConfiguration(prompt: "> "), console: console);
             Console.WriteLine($"History saved at {historyPath}");
 
             while (true)

@@ -10,6 +10,11 @@ using System.Text.RegularExpressions;
 
 internal class Program
 {
+    static Dictionary<JsonTokenType, AnsiColor> _styleDictionary = new()  {
+        { JsonTokenType.String, AnsiColor.BrightGreen },
+        { JsonTokenType.Number, AnsiColor.Yellow },
+    };
+
     static IEnumerable<string> GetPotentialSerialPortNames()
     {
         return SerialPort.GetPortNames().Where((name) => Regex.IsMatch(name, "cu.*NOTE.*"));
@@ -32,10 +37,6 @@ internal class Program
     static void OutputFormattedJson(IConsole console, string json)
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
-        var styleDictionary = new Dictionary<JsonTokenType, AnsiColor> {
-            { JsonTokenType.String, AnsiColor.BrightGreen },
-            { JsonTokenType.Number, AnsiColor.Yellow },
-        };
         var formatting = new List<FormatSpan>();
 
         while (reader.Read())
@@ -51,9 +52,9 @@ internal class Program
                     break;
             }
 
-            if (styleDictionary.ContainsKey(reader.TokenType))
+            if (_styleDictionary.ContainsKey(reader.TokenType))
             {
-                formatting.Add(new FormatSpan(start, length, styleDictionary[reader.TokenType]));
+                formatting.Add(new FormatSpan(start, length, _styleDictionary[reader.TokenType]));
             }
         }
 

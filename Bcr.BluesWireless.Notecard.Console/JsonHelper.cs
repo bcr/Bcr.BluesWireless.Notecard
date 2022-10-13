@@ -9,6 +9,8 @@ public class JsonHelper
     static Dictionary<JsonTokenType, AnsiColor> _styleDictionary = new()  {
         { JsonTokenType.String, AnsiColor.BrightGreen },
         { JsonTokenType.Number, AnsiColor.Yellow },
+        { JsonTokenType.True, AnsiColor.Yellow },
+        { JsonTokenType.False, AnsiColor.Yellow },
     };
 
     public static FormattedString GetFormattedJson(string json)

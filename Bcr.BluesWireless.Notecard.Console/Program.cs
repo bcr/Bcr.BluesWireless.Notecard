@@ -1,9 +1,7 @@
 ﻿using Bcr.BluesWireless.Notecard.Console;
 using Bcr.BluesWireless.Notecard.Core;
 using PrettyPrompt;
-using PrettyPrompt.Completion;
 using PrettyPrompt.Consoles;
-using PrettyPrompt.Documents;
 using PrettyPrompt.Highlighting;
 using System.IO.Ports;
 using System.Text;
@@ -16,22 +14,6 @@ internal class Program
         { JsonTokenType.String, AnsiColor.BrightGreen },
         { JsonTokenType.Number, AnsiColor.Yellow },
     };
-
-    class NotecardCompletionItem
-    {
-        public string? Request { get; init; }
-        public string? Json { get; init; }
-        public string? Description { get; init; }
-    }
-
-    static List<NotecardCompletionItem> _notecardCompletionItems = new () {
-        new NotecardCompletionItem { Request = "card.status", Json = "{\"req\":\"card.status\"}", Description = "Returns general information about the Notecard's operating status." },
-        new NotecardCompletionItem { Request = "card.temp", Json = "{\"req\":\"card.temp\"}", Description = "Get the current temperature from the Notecard's onboard calibrated temperature sensor." },
-        new NotecardCompletionItem { Request = "note.add" },
-        new NotecardCompletionItem { Request = "note.changes" },
-    };
-
-    static List<CompletionItem> _requestCompletionItems = new ();
 
     static IEnumerable<string> GetPotentialSerialPortNames()
     {
@@ -79,27 +61,8 @@ internal class Program
         console.WriteLine(new FormattedString(json, formatting));
     }
 
-    static void BuildRequestCompletionItems()
-    {
-        foreach (var item in _notecardCompletionItems)
-        {
-            _requestCompletionItems.Add(new CompletionItem(
-                item.Json ?? item.Request ?? "", item.Request, getExtendedDescription: ((item.Description != null) ? ((_) => Task.FromResult<FormattedString>(item.Description)) : null)
-            ));
-        }
-    }
-
-    private class NotecardPromptCallbacks : PromptCallbacks
-    {
-        protected override Task<IReadOnlyList<CompletionItem>> GetCompletionItemsAsync(string text, int caret, TextSpan spanToBeReplaced, CancellationToken cancellationToken)
-        {
-            return Task.FromResult<IReadOnlyList<CompletionItem>>(_requestCompletionItems);
-        }
-    }
-
     private static async Task Main(string[] args)
     {
-        BuildRequestCompletionItems();
         using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
         {
             serialPort.Open();
@@ -107,7 +70,7 @@ internal class Program
             var communicationChannel = new SerialPortCommunicationChannel(serialPort);
             var historyPath = GetHistoryPath();
             var console = new SystemConsole();
-            var prompt = new Prompt(persistentHistoryFilepath: historyPath, callbacks: new NotecardPromptCallbacks(), configuration: new PromptConfiguration(prompt: "> "), console: console);
+            var prompt = new Prompt(persistentHistoryFilepath: historyPath, callbacks: CompletionHelper.GetPromptCallbacks(), configuration: new PromptConfiguration(prompt: "> "), console: console);
             Console.WriteLine($"History saved at {historyPath}");
 
             while (true)

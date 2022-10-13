@@ -49,7 +49,7 @@ internal class Program
 
                 communicationChannel.SendLine(response.Text);
                 var receivedLine = communicationChannel.ReceiveLine();
-                JsonHelper.OutputFormattedJson(console, receivedLine);
+                console.WriteLine(JsonHelper.GetFormattedJson(receivedLine));
                 if (response.Text.Contains("card.time"))
                 {
                     var json = JsonSerializer.Deserialize<CardTimeResponse>(

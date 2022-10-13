@@ -1,4 +1,3 @@
-using PrettyPrompt.Consoles;
 using PrettyPrompt.Highlighting;
 using System.Text;
 using System.Text.Json;
@@ -12,7 +11,7 @@ public class JsonHelper
         { JsonTokenType.Number, AnsiColor.Yellow },
     };
 
-    public static void OutputFormattedJson(IConsole console, string json)
+    public static FormattedString GetFormattedJson(string json)
     {
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
         var formatting = new List<FormatSpan>();
@@ -36,6 +35,6 @@ public class JsonHelper
             }
         }
 
-        console.WriteLine(new FormattedString(json, formatting));
+        return new FormattedString(json, formatting);
     }
 }

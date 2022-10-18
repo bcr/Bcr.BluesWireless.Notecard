@@ -24,7 +24,7 @@ internal class Program
     static IServiceProvider SetupDependencyInjection()
     {
         var serviceProvider = new ServiceCollection()
-            .AddSingleton<ICommunicationChannel, DefaultSerialPortCommunicationChannel>()
+            .AddSingleton<CommunicationChannel, DefaultSerialPortCommunicationChannel>()
             .BuildServiceProvider();
         return serviceProvider;
     }
@@ -33,7 +33,7 @@ internal class Program
     {
         var serviceProvider = SetupDependencyInjection();
     
-        using (var communicationChannel = serviceProvider.GetService<ICommunicationChannel>())
+        using (var communicationChannel = serviceProvider.GetService<CommunicationChannel>())
         {
             Console.WriteLine($"Connected to {communicationChannel}");
             var historyPath = GetHistoryPath();
@@ -49,8 +49,7 @@ internal class Program
                     break;
                 }
 
-                communicationChannel.SendLine(response.Text);
-                var receivedLine = communicationChannel.ReceiveLine();
+                var receivedLine = communicationChannel.Transaction(response.Text);
                 console.WriteLine(JsonHelper.GetFormattedJson(receivedLine));
                 if (response.Text.Contains("card.time"))
                 {

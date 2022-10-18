@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Bcr.BluesWireless.Notecard.Core;
 
-public class SerialPortCommunicationChannel : ICommunicationChannel
+public class SerialPortCommunicationChannel : CommunicationChannel
 {
     private SerialPort _serialPort;
     private bool disposedValue;
@@ -13,12 +13,12 @@ public class SerialPortCommunicationChannel : ICommunicationChannel
         _serialPort = serialPort;
     }
 
-    public void SendLine(string data)
+    protected override void SendLine(string data)
     {
         _serialPort.WriteLine(data);
     }
 
-    public string ReceiveLine()
+    protected override string ReceiveLine()
     {
         return _serialPort.ReadLine();
     }
@@ -39,7 +39,7 @@ public class SerialPortCommunicationChannel : ICommunicationChannel
         }
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);

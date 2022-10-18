@@ -45,6 +45,11 @@ public class SerialPortCommunicationChannel : ICommunicationChannel
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+
+    public override string ToString()
+    {
+        return _serialPort.PortName;
+    }
 }
 
 public class DefaultSerialPortCommunicationChannel : SerialPortCommunicationChannel

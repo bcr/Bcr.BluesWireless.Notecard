@@ -35,7 +35,7 @@ internal class Program
     
         using (var communicationChannel = serviceProvider.GetService<ICommunicationChannel>())
         {
-            // Console.WriteLine($"Connected to {serialPort.PortName}");
+            Console.WriteLine($"Connected to {communicationChannel}");
             var historyPath = GetHistoryPath();
             var console = new SystemConsole();
             var prompt = new Prompt(persistentHistoryFilepath: historyPath, callbacks: CompletionHelper.GetPromptCallbacks(), configuration: new PromptConfiguration(prompt: "> "), console: console);

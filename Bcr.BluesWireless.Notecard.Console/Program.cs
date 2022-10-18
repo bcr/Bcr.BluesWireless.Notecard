@@ -3,29 +3,10 @@ using Bcr.BluesWireless.Notecard.Core;
 using Microsoft.Extensions.DependencyInjection;
 using PrettyPrompt;
 using PrettyPrompt.Consoles;
-using System.IO.Ports;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 internal class Program
 {
-    static SerialPort GetDefaultOpenedSerialPort()
-    {
-        var serialPort = new SerialPort(GetPotentialSerialPortNames().First());
-        serialPort.Open();
-        return serialPort;
-    }
-
-    class DefaultSerialPortCommunicationChannel : SerialPortCommunicationChannel
-    {
-        public DefaultSerialPortCommunicationChannel() : base(GetDefaultOpenedSerialPort()) {}
-    }
-
-    static IEnumerable<string> GetPotentialSerialPortNames()
-    {
-        return SerialPort.GetPortNames().Where((name) => Regex.IsMatch(name, "cu.*NOTE.*"));
-    }
-
     static DateTimeOffset MakeDateTimeOffset(long unixTime, int offsetMinutes)
     {
         var offset = DateTimeOffset.FromUnixTimeSeconds(unixTime);

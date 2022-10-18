@@ -1,4 +1,5 @@
 using System.IO.Ports;
+using System.Text.RegularExpressions;
 
 namespace Bcr.BluesWireless.Notecard.Core;
 
@@ -44,4 +45,21 @@ public class SerialPortCommunicationChannel : ICommunicationChannel
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+}
+
+public class DefaultSerialPortCommunicationChannel : SerialPortCommunicationChannel
+{
+    static SerialPort GetDefaultOpenedSerialPort()
+    {
+        var serialPort = new SerialPort(GetPotentialSerialPortNames().First());
+        serialPort.Open();
+        return serialPort;
+    }
+
+    static IEnumerable<string> GetPotentialSerialPortNames()
+    {
+        return SerialPort.GetPortNames().Where((name) => Regex.IsMatch(name, "cu.*NOTE.*"));
+    }
+
+    public DefaultSerialPortCommunicationChannel() : base(GetDefaultOpenedSerialPort()) {}
 }

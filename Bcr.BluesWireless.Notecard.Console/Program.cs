@@ -1,5 +1,6 @@
 ﻿using Bcr.BluesWireless.Notecard.Console;
 using Bcr.BluesWireless.Notecard.Core;
+using Microsoft.Extensions.DependencyInjection;
 using PrettyPrompt;
 using PrettyPrompt.Consoles;
 using System.IO.Ports;
@@ -8,6 +9,18 @@ using System.Text.RegularExpressions;
 
 internal class Program
 {
+    static SerialPort GetDefaultOpenedSerialPort()
+    {
+        var serialPort = new SerialPort(GetPotentialSerialPortNames().First());
+        serialPort.Open();
+        return serialPort;
+    }
+
+    class DefaultSerialPortCommunicationChannel : SerialPortCommunicationChannel
+    {
+        public DefaultSerialPortCommunicationChannel() : base(GetDefaultOpenedSerialPort()) {}
+    }
+
     static IEnumerable<string> GetPotentialSerialPortNames()
     {
         return SerialPort.GetPortNames().Where((name) => Regex.IsMatch(name, "cu.*NOTE.*"));
@@ -27,13 +40,22 @@ internal class Program
         return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".bluehistory");
     }
 
+    static IServiceProvider SetupDependencyInjection()
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddSingleton<ICommunicationChannel, DefaultSerialPortCommunicationChannel>()
+            .BuildServiceProvider();
+        return serviceProvider;
+    }
+
     private static async Task Main(string[] args)
     {
-        using (var serialPort = new SerialPort(GetPotentialSerialPortNames().First()))
+        var serviceProvider = SetupDependencyInjection();
+    
+        var communicationChannel = serviceProvider.GetService<ICommunicationChannel>();
+
         {
-            serialPort.Open();
-            Console.WriteLine($"Connected to {serialPort.PortName}");
-            var communicationChannel = new SerialPortCommunicationChannel(serialPort);
+            // Console.WriteLine($"Connected to {serialPort.PortName}");
             var historyPath = GetHistoryPath();
             var console = new SystemConsole();
             var prompt = new Prompt(persistentHistoryFilepath: historyPath, callbacks: CompletionHelper.GetPromptCallbacks(), configuration: new PromptConfiguration(prompt: "> "), console: console);

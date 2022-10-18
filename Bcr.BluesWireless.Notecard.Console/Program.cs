@@ -52,8 +52,7 @@ internal class Program
     {
         var serviceProvider = SetupDependencyInjection();
     
-        var communicationChannel = serviceProvider.GetService<ICommunicationChannel>();
-
+        using (var communicationChannel = serviceProvider.GetService<ICommunicationChannel>())
         {
             // Console.WriteLine($"Connected to {serialPort.PortName}");
             var historyPath = GetHistoryPath();

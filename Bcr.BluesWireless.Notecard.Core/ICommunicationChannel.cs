@@ -1,6 +1,6 @@
 namespace Bcr.BluesWireless.Notecard.Core;
 
-public interface ICommunicationChannel
+public interface ICommunicationChannel : IDisposable
 {
     /// <summary>
     /// Send a line. Do NOT include the trailing LF in your data.

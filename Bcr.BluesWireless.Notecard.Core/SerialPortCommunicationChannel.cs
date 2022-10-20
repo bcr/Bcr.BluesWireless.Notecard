@@ -13,15 +13,9 @@ public class SerialPortCommunicationChannel : CommunicationChannel
         _serialPort = serialPort;
     }
 
-    protected override void SendLine(string data)
-    {
-        _serialPort.WriteLine(data);
-    }
+    protected override void SendLine(string data) => _serialPort.WriteLine(data);
 
-    protected override string ReceiveLine()
-    {
-        return _serialPort.ReadLine();
-    }
+    protected override string ReceiveLine() =>  _serialPort.ReadLine();
 
     protected virtual void Dispose(bool disposing)
     {
@@ -46,10 +40,7 @@ public class SerialPortCommunicationChannel : CommunicationChannel
         GC.SuppressFinalize(this);
     }
 
-    public override string ToString()
-    {
-        return _serialPort.PortName;
-    }
+    public override string ToString() => _serialPort.PortName;
 }
 
 public class DefaultSerialPortCommunicationChannel : SerialPortCommunicationChannel
@@ -61,10 +52,7 @@ public class DefaultSerialPortCommunicationChannel : SerialPortCommunicationChan
         return serialPort;
     }
 
-    static IEnumerable<string> GetPotentialSerialPortNames()
-    {
-        return SerialPort.GetPortNames().Where((name) => Regex.IsMatch(name, "cu.*NOTE.*"));
-    }
+    static IEnumerable<string> GetPotentialSerialPortNames() => SerialPort.GetPortNames().Where((name) => Regex.IsMatch(name, "cu.*NOTE.*"));
 
     public DefaultSerialPortCommunicationChannel() : base(GetDefaultOpenedSerialPort()) {}
 }

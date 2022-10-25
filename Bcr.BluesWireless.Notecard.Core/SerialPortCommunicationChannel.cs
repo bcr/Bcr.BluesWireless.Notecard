@@ -47,7 +47,16 @@ public class DefaultSerialPortCommunicationChannel : SerialPortCommunicationChan
 {
     static SerialPort GetDefaultOpenedSerialPort()
     {
-        var serialPort = new SerialPort(GetPotentialSerialPortNames().First());
+        string portName;
+        try
+        {
+            portName = GetPotentialSerialPortNames().First();
+        }
+        catch (InvalidOperationException e)
+        {
+            throw new Exception("Unable to find matching serial port name", e);
+        }
+        var serialPort = new SerialPort(portName);
         serialPort.Open();
         return serialPort;
     }
